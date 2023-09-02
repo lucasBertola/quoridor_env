@@ -83,16 +83,18 @@ class QuoridorEnv():
         self.last_move_row = None
         self.last_move_col = None
         self.last_move_type = None
-        self.position_col_player_1 = (self.size+1)/2
+        self.position_col_player_1 = int((self.size+1)/2)
         self.position_row_player_1 = 1
-        self.position_col_player_2 = (self.size+1)/2
+        self.position_col_player_2 = int((self.size+1)/2)
         self.position_row_player_2 = self.size 
         self.wall_left_player_1 = self.size+1
         self.wall_left_player_2 = self.size+1 
+        self.set_board_case_with_player_notation(self.position_col_player_1, self.position_row_player_1, self.player_1_number)
+        self.set_board_case_with_player_notation(self.position_col_player_2, self.position_row_player_2, self.player_2_number)
         self.invalid_move_has_been_played = False
 
         self.next_player_to_play = self.player_1_number
-
+        self.insert_wall(MoveWall(4, 4, 'v', self.size))
         return self.board, {}
     
     def play(self, move: Move):
@@ -138,11 +140,13 @@ class QuoridorEnv():
             y = (wall.row-1)*2
             self.board[x][y] = self.wall_number
             self.board[x][y+1] = self.wall_number
+            self.board[x][y+2] = self.wall_number
         else: # wall.move_type=='h'
             x = (wall.col-1)*2
             y = (wall.row-1)*2 +1
             self.board[x][y] = self.wall_number
             self.board[x+1][y] = self.wall_number
+            self.board[x+2][y] = self.wall_number
 
     def playMove(self, move: Move):
 
@@ -220,40 +224,65 @@ class QuoridorEnv():
         output = ""
 
         # Afficher les murs restants pour le joueur 2
-        output += "   |" * self.wall_left_player_2 + "\n"
+        output+="Player 2 : "+str(self.wall_left_player_2)+" walls left \n"
+
+        # Afficher les lignes du plateau
+        for row in range(self.size*2-1, -2, -1):
+            # Afficher les murs horizontaux et les pions
+            if(row%2==0):
+                isOnPlayerRow = True
+                PlayerRow = row/2+1
+                output+=' '+str(int(PlayerRow))+' '
+            else:
+                isOnPlayerRow = False
+                output+='   '
+           
+            for col in range(-1, self.size*2):
+                isOnPlayerCol = row%2==0
+                if(isOnPlayerRow==False):
+                    if(row == -1 or row == self.size*2-1):
+                        if(col%2==1):
+                            output+='+'
+                        else:
+                            output+='---'
+                    else:
+                        if(col%2==1):
+                            output+='+'
+                        elif(self.board[col][row]==self.wall_number):
+                            output+='---'
+                        else:
+                            output+='   '
+                
+                else:#isOnPlayerRow==True
+                    if(col==-1):
+                        output+='|'
+                    elif(col==self.size*2-1):
+                        output+='|'
+                    elif(self.board[col][row]==self.player_1_number or self.board[col][row]==self.player_2_number):
+                        output+=' '+str(self.board[col][row])+' '
+                    # elif(self.board[col][row]==self.wall_number):
+                    #     output+='---'
+                    elif(col%2==1 and self.board[col][row]==self.wall_number):
+                        output+='|'
+                    elif(col%2==1):
+                        output+=' '
+                    else:
+                        output+='   '
+                        
+                    
+                # output+=str(col)
+            output += "\n"
+
+        
+        # Afficher les murs restants pour le joueur 1
+
 
         # Afficher les numéros de colonne
-        output += " "
+        output += "  "
         for col in range(1, self.size + 1):
             output += "   " + str(col)
         output += "\n"
-
-        # Afficher les lignes du plateau
-        for row in range(self.size, 0, -1):
-            # Afficher les murs horizontaux et les pions
-            for col in range(1, self.size + 1):
-                cell_value = self.board[(row - 1) * 2][(col - 1) * 2]
-                if cell_value == self.wall_number:
-                    output += " - "
-                elif cell_value == self.player_1_number:
-                    output += " 1 "
-                elif cell_value == self.player_2_number:
-                    output += " 2 "
-                else:
-                    output += "   "
-                if col < self.size:
-                    output += "+" if self.board[(row - 1) * 2][(col - 1) * 2 + 1] == self.wall_number else " "
-            output += "\n"
-
-            # Afficher les murs verticaux et les numéros de ligne
-            if row > 1:
-                for col in range(1, self.size + 1):
-                    output += "|" if self.board[(row - 1) * 2 - 1][(col - 1) * 2] == self.wall_number else " "
-                    output += "   "
-                output += str(row - 1) + "\n"
-
-        # Afficher les murs restants pour le joueur 1
-        output += "   |" * self.wall_left_player_1 + "\n"
-
+        
+        output+="Player 1 : "+str(self.wall_left_player_2)+" walls left \n"
+        
         return output
-

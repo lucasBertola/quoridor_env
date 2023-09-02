@@ -1,1 +1,1 @@
-from .ConnectFourEnv import ConnectFourEnv
+from .QuoridorEnv import QuoridorEnv
