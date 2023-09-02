@@ -1,70 +1,8 @@
 import numpy as np
-from abc import ABC, abstractmethod
 
-
-class Move(ABC):
-    @abstractmethod
-    def is_pawn_move(self):
-        pass
-    def is_wall_move(self):
-        pass
-    
-class MoveWall(Move):
-    def __init__(self, row, col, move_type, board_size):
-        assert move_type in ['v', 'h'], "move_type must be 'v' or 'h'"
-        
-        assert 0 < row < board_size, "row must be between 0 and board_size"
-        assert 0 < col < board_size, "col must be between 0 and board_size"
-        
-        self.row = row
-        self.col = col
-        self.move_type = move_type
-        self.board_size = board_size
-
-    def is_pawn_move(self):
-        return False
-
-    def is_wall_move(self):
-        return True
-
-class PlayerMove(Move):
-    def __init__(self, direction):
-        self.direction = direction
-        assert direction in ['up', 'down', 'left', 'right', 'up_left', 'up_right', 'down_left', 'down_right'], "direction must be one of the valid directions"
-
-        self.row_change=0
-        self.col_change=0
-        if direction == 'up':
-            self.row_change = 1
-            self.col_change = 0
-        elif direction == 'down':
-            self.row_change = -1
-            self.col_change = 0
-        elif direction == 'left':
-            self.row_change = 0
-            self.col_change = -1
-        elif direction == 'right':
-            self.row_change = 0
-            self.col_change = 1
-        elif direction == 'up_left':
-            self.row_change = 1
-            self.col_change = -1
-        elif direction == 'up_right':
-            self.row_change = 1
-            self.col_change = 1
-        elif direction == 'down_left':
-            self.row_change = -1
-            self.col_change = -1
-        elif direction == 'down_right':
-            self.row_change = -1
-            self.col_change = 1
-            
-            
-    def is_pawn_move(self):
-        return True
-
-    def is_wall_move(self):
-        return False
+from .Move import MoveWall
+from .Move import Move
+from .Move import PlayerMove
 
 class QuoridorEnv():
     WIN_REWARD = 1
@@ -94,7 +32,6 @@ class QuoridorEnv():
         self.invalid_move_has_been_played = False
 
         self.next_player_to_play = self.player_1_number
-        self.insert_wall(MoveWall(4, 4, 'v', self.size))
         return self.board, {}
     
     def play(self, move: Move):
@@ -105,9 +42,9 @@ class QuoridorEnv():
         self.switch_player()
         
         if is_finish:            
-            return self.board, result, True, False, {}
+            return result, True
 
-        return self.board, 0, False, False, {}
+        return 0, False
     
     def maxBoardSize(self):
         return (self.size*2)-1
@@ -120,7 +57,7 @@ class QuoridorEnv():
         #return 0, False if not finish
         #return player_who_won, True if finish
         if self.invalid_move_has_been_played:
-            return  self.player_2_number if self.next_player_to_play == self.player_1_number else self.player_1_name, True
+            return  self.player_2_number if self.next_player_to_play == self.player_1_number else self.player_1_number, True
         
         # Check if player 1 has reached the last row
         if self.position_row_player_1 == self.size:
@@ -131,8 +68,8 @@ class QuoridorEnv():
             return self.player_2_number, True
         return 0, False
     
-    def set_board_case_with_player_notation(self, row, col, value):
-        self.board[(row-1)*2][(col-1)*2] = value
+    def set_board_case_with_player_notation(self, col, row, value):
+        self.board[(col-1)*2][(row-1)*2] = value
         
     def insert_wall(self, wall: MoveWall):
         if(wall.move_type=='v'):
@@ -147,10 +84,16 @@ class QuoridorEnv():
             self.board[x][y] = self.wall_number
             self.board[x+1][y] = self.wall_number
             self.board[x+2][y] = self.wall_number
+            
+        if self.next_player_to_play == self.player_1_number:
+            self.wall_left_player_1 -= 1
+        else:
+            self.wall_left_player_2 -= 1
 
     def playMove(self, move: Move):
-
+        #todo better call is_move_valid before
         if move.is_pawn_move():
+        
             # Gérer le mouvement du pion
             if(self.next_player_to_play == self.player_1_number):
                 position_col = self.position_col_player_1
@@ -170,8 +113,8 @@ class QuoridorEnv():
                 self.invalid_move_has_been_played = True
                 return
             
-            self.set_board_case_with_player_notation(position_row, position_col, 0)
-            self.set_board_case_with_player_notation(new_row, new_col, self.next_player_to_play)
+            self.set_board_case_with_player_notation(position_col, position_row, 0)
+            self.set_board_case_with_player_notation(new_col, new_row, self.next_player_to_play)
             
             if(self.next_player_to_play == self.player_1_number):
                 self.position_col_player_1 = new_col
@@ -218,13 +161,19 @@ class QuoridorEnv():
         new_env.position_col_player_2 = self.position_col_player_2
         new_env.position_row_player_2 = self.position_row_player_2
         
+        new_env.wall_left_player_1 = self.wall_left_player_1
+        new_env.wall_left_player_2 = self.wall_left_player_2
+        
+        new_env.player_1_name = self.player_1_name
+        new_env.player_2_name = self.player_2_name
+        
         return new_env
 
     def render(self):
         output = ""
 
         # Afficher les murs restants pour le joueur 2
-        output+="Player 2 : "+str(self.wall_left_player_2)+" walls left \n"
+        output+="Player 2 : "+str(self.wall_left_player_2)+" walls left\n"
 
         # Afficher les lignes du plateau
         for row in range(self.size*2-1, -2, -1):
@@ -283,6 +232,6 @@ class QuoridorEnv():
             output += "   " + str(col)
         output += "\n"
         
-        output+="Player 1 : "+str(self.wall_left_player_2)+" walls left \n"
+        output+="Player 1 : "+str(self.wall_left_player_1)+" walls left"
         
         return output
