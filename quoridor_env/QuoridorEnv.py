@@ -91,7 +91,10 @@ class QuoridorEnv():
             self.wall_left_player_1 -= 1
         else:
             self.wall_left_player_2 -= 1
-            
+    
+    def board_position_is_player(self, col, row):
+        return self.board[col][row] == self.player_1_number or self.board[col][row] == self.player_2_number
+     
     def is_move_valid(self, move: Move):
         if move.is_pawn_move():
             if(self.next_player_to_play == self.player_1_number):
@@ -106,27 +109,36 @@ class QuoridorEnv():
             new_col = position_col + col_change
            
             is_diagonal = row_change != 0 and col_change != 0
-            #jump over player
+           
             old_x,old_y = self.get_board_case_with_player_notation(position_col,position_row )
             x,y = self.get_board_case_with_player_notation(new_col,new_row )
             
+            #check if outside
+            if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
+                return False  
+            
             if(is_diagonal):
-                #check if there is a player to jump over
+                # Check if there is a player to jump over
                 front_row_1 = position_row + row_change
                 front_col_1 = position_col
                 front_row_2 = position_row
                 front_col_2 = position_col + col_change
-
+                
                 front_x1, front_y1 = self.get_board_case_with_player_notation(front_col_1, front_row_1)
                 front_x2, front_y2 = self.get_board_case_with_player_notation(front_col_2, front_row_2)
                 
-                if (self.board[front_x1][front_y1] != self.player_1_number 
-                    and self.board[front_x1][front_y1] != self.player_2_number
-                    and self.board[front_x2][front_y2] != self.player_1_number 
-                    and self.board[front_x2][front_y2] != self.player_2_number):
+                if (not self.board_position_is_player(front_x1,front_y1) and not self.board_position_is_player(front_x2,front_y2)):
                     return False
-                # todo Vérifiez s'il n'y a pas de mur derrière ce joueur
 
+                # Check if there is a wall behind the player
+                front_x,front_y = (front_x1, front_y1) if self.board_position_is_player(front_x1,front_y1) else (front_x2, front_y2)
+                
+                back_x = front_x + int((front_x - old_x)/2)
+                back_y = front_y + int((front_y - old_y)/2)
+                
+                if(self.board[back_x][back_y] != self.wall_number):
+                    return False
+            
 
                 # todo Vérifiez s'il n'y a pas de mur entre le pion qu'au saute et la nouvelle position
                 
@@ -136,15 +148,16 @@ class QuoridorEnv():
                 if(self.board[int((x+old_x)/2)][int((y+old_y)/2)] == self.wall_number):
                     return False
             
-            if(self.board[x][y] == self.player_1_number or self.board[x][y] == self.player_2_number):
+             #jump over player
+            if(self.board_position_is_player(x,y)):
                 #todo and add if not diagonal
                 #todo check if wall between
                 new_row = new_row + row_change
                 new_col = new_col + col_change
+                if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
+                    return False  
                 
-            #check if outside
-            if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
-                return False  
+
 
             #check if wall
             
@@ -154,10 +167,11 @@ class QuoridorEnv():
         return True
     
     def playMove(self, move: Move):
+        
         if(not self.is_move_valid(move)):
             self.invalid_move_has_been_played = True
             return
-        #todo better call is_move_valid before
+
         if move.is_pawn_move():
         
             # Gérer le mouvement du pion
@@ -175,7 +189,7 @@ class QuoridorEnv():
            
             #jump over player
             x,y = self.get_board_case_with_player_notation(new_col,new_row )
-            if(self.board[x][y] == self.player_1_number or self.board[x][y] == self.player_2_number):
+            if(self.board_position_is_player(x,y)):
                 new_row = new_row + row_change
                 new_col = new_col + col_change
             
@@ -273,7 +287,7 @@ class QuoridorEnv():
                         output+='|'
                     elif(col==self.size*2-1):
                         output+='|'
-                    elif(self.board[col][row]==self.player_1_number or self.board[col][row]==self.player_2_number):
+                    elif(self.board_position_is_player(col,row)):
                         output+=' '+str(self.board[col][row])+' '
                     # elif(self.board[col][row]==self.wall_number):
                     #     output+='---'
