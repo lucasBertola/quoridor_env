@@ -112,11 +112,7 @@ class QuoridorEnv():
            
             old_x,old_y = self.get_board_case_with_player_notation(position_col,position_row )
             x,y = self.get_board_case_with_player_notation(new_col,new_row )
-            
-            # Check if outside
-            if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
-                return False  
-            
+                        
             if(is_diagonal):
                 # Check if there is a player to jump over
                 front_row_1 = position_row + row_change
@@ -146,22 +142,35 @@ class QuoridorEnv():
                 wall_y = int((y+front_y)/2)
                 if(self.board[wall_x][wall_y] == self.wall_number):
                     return False
+            
+            #jump over player
+            if(not is_diagonal and self.board_position_is_player(x,y)):
+                 #check if wall between 
+                if(self.board[int((x+old_x)/2)][int((y+old_y)/2)] == self.wall_number):
+                    return False
+                #todo check if wall between
+                #todo check si a pas de mur derriere
+                position_col = new_col
+                position_row = new_row
+                new_row = position_row + row_change
+                new_col = position_col + col_change
+                old_x,old_y = self.get_board_case_with_player_notation(position_col,position_row )
+                x,y = self.get_board_case_with_player_notation(new_col,new_row )
+                
+                #check if it s not outside
+                if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
+                    return False  
                 
             if(not is_diagonal) :
                 #check if wall between 
                 if(self.board[int((x+old_x)/2)][int((y+old_y)/2)] == self.wall_number):
                     return False
             
-             #jump over player
-            if(self.board_position_is_player(x,y)):
-                #todo and add if not diagonal
-                #todo check if wall between
-                #todo check si a pas de mur derriere
+            # Check if outside
+            if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
+                return False  
                 
-                new_row = new_row + row_change
-                new_col = new_col + col_change
-                if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
-                    return False  
+                
                 
         else:#wall
             #todo check is wall is valide
