@@ -899,15 +899,15 @@ Player 1 : 4 walls left"""
      1   2   3
 Player 1 : 4 walls left"""
 
-    player_who_finish,isFinish  = env.play(PlayerMove('left'))
+    player_who_finish,isFinish  = env.play(PlayerMove('down'))
     assert player_who_finish == 0, "game should not be finished"
     assert isFinish == False, "game should not be finished"
     assert env.render() == \
 """Player 2 : 4 walls left
    +---+---+---+
- 3 | 2         |
+ 3 |           |
    +   +   +   +
- 2 |           |
+ 2 |     2     |
    +   +   +   +
  1 |         1 |
    +---+---+---+
@@ -920,46 +920,16 @@ Player 1 : 4 walls left"""
     assert env.render() == \
 """Player 2 : 4 walls left
    +---+---+---+
- 3 | 2         |
-   +   +   +   +
- 2 |         1 |
-   +   +   +   +
- 1 |           |
-   +---+---+---+
-     1   2   3
-Player 1 : 4 walls left"""
-
-    player_who_finish,isFinish  = env.play(PlayerMove('down'))
-    assert player_who_finish == 0, "game should not be finished"
-    assert isFinish == False, "game should not be finished"
-    assert env.render() == \
-"""Player 2 : 4 walls left
-   +---+---+---+
  3 |           |
    +   +   +   +
- 2 | 2       1 |
+ 2 |     2   1 |
    +   +   +   +
  1 |           |
    +---+---+---+
      1   2   3
 Player 1 : 4 walls left"""
 
-    player_who_finish,isFinish  = env.play(PlayerMove('left'))
-    assert player_who_finish == 0, "game should not be finished"
-    assert isFinish == False, "game should not be finished"
-    assert env.render() == \
-"""Player 2 : 4 walls left
-   +---+---+---+
- 3 |           |
-   +   +   +   +
- 2 | 2   1     |
-   +   +   +   +
- 1 |           |
-   +---+---+---+
-     1   2   3
-Player 1 : 4 walls left"""
-
-    player_who_finish,isFinish  = env.play(MoveWall(2,1,'v',boardSize))
+    player_who_finish,isFinish  = env.play(MoveWall(1,1,'h',boardSize))
     assert player_who_finish == 0, "game should not be finished"
     assert isFinish == False, "game should not be finished"
     assert env.render() == \
@@ -967,9 +937,9 @@ Player 1 : 4 walls left"""
    +---+---+---+
  3 |           |
    +   +   +   +
- 2 | 2   1 |   |
-   +   +   +   +
- 1 |       |   |
+ 2 |     2   1 |
+   +---+---+   +
+ 1 |           |
    +---+---+---+
      1   2   3
 Player 1 : 4 walls left"""
@@ -982,9 +952,9 @@ Player 1 : 4 walls left"""
    +---+---+---+
  3 |           |
    +   +   +   +
- 2 | 2   1 |   |
-   +   +   +   +
- 1 |       |   |
+ 2 |     2   1 |
+   +---+---+   +
+ 1 |           |
    +---+---+---+
      1   2   3
 Player 1 : 4 walls left"""
@@ -1020,15 +990,15 @@ Player 1 : 4 walls left"""
      1   2   3
 Player 1 : 4 walls left"""
 
-    player_who_finish,isFinish  = env.play(PlayerMove('left'))
+    player_who_finish,isFinish  = env.play(PlayerMove('down'))
     assert player_who_finish == 0, "game should not be finished"
     assert isFinish == False, "game should not be finished"
     assert env.render() == \
 """Player 2 : 4 walls left
    +---+---+---+
- 3 | 2         |
+ 3 |           |
    +   +   +   +
- 2 |           |
+ 2 |     2     |
    +   +   +   +
  1 |         1 |
    +---+---+---+
@@ -1041,59 +1011,30 @@ Player 1 : 4 walls left"""
     assert env.render() == \
 """Player 2 : 4 walls left
    +---+---+---+
- 3 | 2         |
-   +   +   +   +
- 2 |         1 |
-   +   +   +   +
- 1 |           |
-   +---+---+---+
-     1   2   3
-Player 1 : 4 walls left"""
-
-    player_who_finish,isFinish  = env.play(PlayerMove('down'))
-    assert player_who_finish == 0, "game should not be finished"
-    assert isFinish == False, "game should not be finished"
-    assert env.render() == \
-"""Player 2 : 4 walls left
-   +---+---+---+
  3 |           |
    +   +   +   +
- 2 | 2       1 |
+ 2 |     2   1 |
    +   +   +   +
  1 |           |
    +---+---+---+
      1   2   3
 Player 1 : 4 walls left"""
 
-    player_who_finish,isFinish  = env.play(PlayerMove('left'))
-    assert player_who_finish == 0, "game should not be finished"
-    assert isFinish == False, "game should not be finished"
-    assert env.render() == \
-"""Player 2 : 4 walls left
-   +---+---+---+
- 3 |           |
-   +   +   +   +
- 2 | 2   1     |
-   +   +   +   +
- 1 |           |
-   +---+---+---+
-     1   2   3
-Player 1 : 4 walls left"""
-
-    player_who_finish,isFinish  = env.play(MoveWall(2,1,'v',boardSize))
+    player_who_finish,isFinish  = env.play(MoveWall(1,2,'h',boardSize))
     assert player_who_finish == 0, "game should not be finished"
     assert isFinish == False, "game should not be finished"
     assert env.render() == \
 """Player 2 : 3 walls left
    +---+---+---+
  3 |           |
+   +---+---+   +
+ 2 |     2   1 |
    +   +   +   +
- 2 | 2   1 |   |
-   +   +   +   +
- 1 |       |   |
+ 1 |           |
    +---+---+---+
      1   2   3
 Player 1 : 4 walls left"""
+
 
     player_who_finish,isFinish  = env.play(PlayerMove('down_left'))
     assert player_who_finish == env.player_2_number
@@ -1102,10 +1043,10 @@ Player 1 : 4 walls left"""
 """Player 2 : 3 walls left
    +---+---+---+
  3 |           |
+   +---+---+   +
+ 2 |     2   1 |
    +   +   +   +
- 2 | 2   1 |   |
-   +   +   +   +
- 1 |       |   |
+ 1 |           |
    +---+---+---+
      1   2   3
 Player 1 : 4 walls left"""

@@ -136,7 +136,9 @@ class QuoridorEnv():
                 back_x = front_x + int((front_x - old_x)/2)
                 back_y = front_y + int((front_y - old_y)/2)
                 
-                if(self.board[back_x][back_y] != self.wall_number):
+                back_is_outside = back_x <= 0 or back_x >= self.maxBoardSize() or back_y <= 0 or back_y >= self.maxBoardSize()
+
+                if(not back_is_outside and self.board[back_x][back_y] != self.wall_number):
                     return False
             
                 # check if there is no wall between second player and new position
