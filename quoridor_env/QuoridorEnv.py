@@ -146,7 +146,6 @@ class QuoridorEnv():
                 wall_y = int((y+front_y)/2)
                 if(self.board[wall_x][wall_y] == self.wall_number):
                     return False
-                #todo check if bordure de fin de plateau
                 
             if(not is_diagonal) :
                 #check if wall between 

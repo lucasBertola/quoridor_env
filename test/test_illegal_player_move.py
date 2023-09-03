@@ -2328,5 +2328,250 @@ Player 1 : 5 walls left"""
 Player 1 : 5 walls left"""
 
 
+def test_move_up_left_2_with_blocked_wall_on_board():
+    boardSize = 5
+    env = QuoridorEnv(size=boardSize)
+    env.reset()
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |                   |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |                   |
+   +   +   +   +   +   +
+ 1 |         1         |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('up'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |                   |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |         1         |
+   +   +   +   +   +   +
+ 1 |                   |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('down'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |                   |
+   +   +   +   +   +   +
+ 4 |         2         |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |         1         |
+   +   +   +   +   +   +
+ 1 |                   |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('up'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |                   |
+   +   +   +   +   +   +
+ 4 |         2         |
+   +   +   +   +   +   +
+ 3 |         1         |
+   +   +   +   +   +   +
+ 2 |                   |
+   +   +   +   +   +   +
+ 1 |                   |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('up'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |                   |
+   +   +   +   +   +   +
+ 3 |         1         |
+   +   +   +   +   +   +
+ 2 |                   |
+   +   +   +   +   +   +
+ 1 |                   |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('up'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |         1         |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |                   |
+   +   +   +   +   +   +
+ 1 |                   |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(MoveWall(2,4,'v',boardSize))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 5 walls left
+   +---+---+---+---+---+
+ 5 |       | 2         |
+   +   +   +   +   +   +
+ 4 |       | 1         |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |                   |
+   +   +   +   +   +   +
+ 1 |                   |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('up_left'))
+    assert player_who_finish == env.player_2_number
+    assert isFinish == True
+    assert env.render() == \
+"""Player 2 : 5 walls left
+   +---+---+---+---+---+
+ 5 |       | 2         |
+   +   +   +   +   +   +
+ 4 |       | 1         |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |                   |
+   +   +   +   +   +   +
+ 1 |                   |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+def test_move_up_left_2_on_left_up_board():
+    boardSize = 3
+    env = QuoridorEnv(size=boardSize)
+    env.reset()
+    assert env.render() == \
+"""Player 2 : 4 walls left
+   +---+---+---+
+ 3 |     2     |
+   +   +   +   +
+ 2 |           |
+   +   +   +   +
+ 1 |     1     |
+   +---+---+---+
+     1   2   3
+Player 1 : 4 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('left'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 4 walls left
+   +---+---+---+
+ 3 |     2     |
+   +   +   +   +
+ 2 |           |
+   +   +   +   +
+ 1 | 1         |
+   +---+---+---+
+     1   2   3
+Player 1 : 4 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('left'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 4 walls left
+   +---+---+---+
+ 3 | 2         |
+   +   +   +   +
+ 2 |           |
+   +   +   +   +
+ 1 | 1         |
+   +---+---+---+
+     1   2   3
+Player 1 : 4 walls left"""
+
+    player_who_finish,isFinish  = env.play(PlayerMove('up'))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 4 walls left
+   +---+---+---+
+ 3 | 2         |
+   +   +   +   +
+ 2 | 1         |
+   +   +   +   +
+ 1 |           |
+   +---+---+---+
+     1   2   3
+Player 1 : 4 walls left"""
+
+    player_who_finish,isFinish  = env.play(MoveWall(1,1,'h',boardSize))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    assert env.render() == \
+"""Player 2 : 3 walls left
+   +---+---+---+
+ 3 | 2         |
+   +   +   +   +
+ 2 | 1         |
+   +---+---+   +
+ 1 |           |
+   +---+---+---+
+     1   2   3
+Player 1 : 4 walls left"""
+
+
+    player_who_finish,isFinish  =  env.play(PlayerMove('up_left'))
+    assert player_who_finish == env.player_2_number
+    assert isFinish == True
+    assert env.render() == \
+"""Player 2 : 3 walls left
+   +---+---+---+
+ 3 | 2         |
+   +   +   +   +
+ 2 | 1         |
+   +---+---+   +
+ 1 |           |
+   +---+---+---+
+     1   2   3
+Player 1 : 4 walls left"""
+
 if __name__ == "__main__":
     pytest.main()
