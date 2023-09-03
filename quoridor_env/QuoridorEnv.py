@@ -113,7 +113,7 @@ class QuoridorEnv():
             old_x,old_y = self.get_board_case_with_player_notation(position_col,position_row )
             x,y = self.get_board_case_with_player_notation(new_col,new_row )
             
-            #check if outside
+            # Check if outside
             if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
                 return False  
             
@@ -139,10 +139,13 @@ class QuoridorEnv():
                 if(self.board[back_x][back_y] != self.wall_number):
                     return False
             
-
-                # todo Vérifiez s'il n'y a pas de mur entre le pion qu'au saute et la nouvelle position
+                # check if there is no wall between second player and new position
+                wall_x = int((x+front_x)/2)
+                wall_y = int((y+front_y)/2)
+                if(self.board[wall_x][wall_y] == self.wall_number):
+                    return False
+                #todo check if bordure de fin de plateau
                 
-             
             if(not is_diagonal) :
                 #check if wall between 
                 if(self.board[int((x+old_x)/2)][int((y+old_y)/2)] == self.wall_number):
@@ -152,17 +155,19 @@ class QuoridorEnv():
             if(self.board_position_is_player(x,y)):
                 #todo and add if not diagonal
                 #todo check if wall between
+                #todo check si a pas de mur derriere
+                
                 new_row = new_row + row_change
                 new_col = new_col + col_change
                 if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
                     return False  
                 
-
-
-            #check if wall
-            
         else:#wall
             #todo check is wall is valide
+            #todo verifier si il y a assez de mur
+            #todo verifier si y a pas de mur a cet endroit qui bloque
+            #todo verifier si ce mur n'empeche pas un joueur d'arriver a la ligne d'arrivée
+    
             return True
         return True
     
@@ -204,9 +209,6 @@ class QuoridorEnv():
                 self.position_row_player_2 = new_row
         else:
             # Gérer le placement du mur
-            #todo verifier si y a pas de mur a cet endroit qui bloque
-            #todo verifier si ce mur n'empeche pas un joueur d'arriver a la ligne d'arrivée
-            #todo verifier si il y a assez de mur
             self.insert_wall(move)
 
         return
