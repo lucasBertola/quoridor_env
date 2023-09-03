@@ -68,8 +68,12 @@ class QuoridorEnv():
             return self.player_2_number, True
         return 0, False
     
+    def get_board_case_with_player_notation(self, col, row):
+        return (col-1)*2, (row-1)*2
+    
     def set_board_case_with_player_notation(self, col, row, value):
-        self.board[(col-1)*2][(row-1)*2] = value
+        x,y = self.get_board_case_with_player_notation(col, row)
+        self.board[x][y] = value
         
     def insert_wall(self, wall: MoveWall):
         if(wall.move_type=='v'):
@@ -104,11 +108,16 @@ class QuoridorEnv():
             
             row_change, col_change = move.row_change, move.col_change
             
-            #todo , si y a un joueur ca peut etre sauté et faire un deplacement en plus
             new_row = position_row + row_change
             new_col = position_col + col_change
+           
             
-            #todo verifier si le deplacement est legal (pas de mur, diagonal autorisé)
+            #jump over player
+            x,y = self.get_board_case_with_player_notation(new_col,new_row )
+            if(self.board[x][y] == self.player_1_number or self.board[x][y] == self.player_2_number):
+                new_row = new_row + row_change
+                new_col = new_col + col_change
+            
             if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
                 self.invalid_move_has_been_played = True
                 return
