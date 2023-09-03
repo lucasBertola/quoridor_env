@@ -49,9 +49,7 @@ class QuoridorEnv():
     def maxBoardSize(self):
         return (self.size*2)-1
 
-    def is_move_valid(self, move: Move):
-        #todo check if rang move if possible. if wall, test if no wall already there. if pawn, test if no pawn already there and if move is possible
-        return True
+
 
     def is_finish(self):
         #return 0, False if not finish
@@ -93,8 +91,53 @@ class QuoridorEnv():
             self.wall_left_player_1 -= 1
         else:
             self.wall_left_player_2 -= 1
+            
+    def is_move_valid(self, move: Move):
+        if move.is_pawn_move():
+            if(self.next_player_to_play == self.player_1_number):
+                position_col = self.position_col_player_1
+                position_row = self.position_row_player_1
+            else:
+                position_col = self.position_col_player_2
+                position_row = self.position_row_player_2
+            
+            row_change, col_change = move.row_change, move.col_change
+            new_row = position_row + row_change
+            new_col = position_col + col_change
+           
+            is_diagonal = row_change != 0 and col_change != 0
+            #jump over player
+            old_x,old_y = self.get_board_case_with_player_notation(position_col,position_row )
+            x,y = self.get_board_case_with_player_notation(new_col,new_row )
+             #todo  diagonal is allow 
+             
+            if(not is_diagonal) :
+                #check if wall between 
+                if(self.board[int((x+old_x)/2)][int((y+old_y)/2)] == self.wall_number):
+                    return False
+            
+            if(self.board[x][y] == self.player_1_number or self.board[x][y] == self.player_2_number):
+                #todo and add if not diagonal
+                #todo check if wall between
+                new_row = new_row + row_change
+                new_col = new_col + col_change
+                
+            #check if outside
+            if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
+                return False  
 
+            #check if wall
+            
+        #todo check if rang move if possible. if wall, test if no wall already there. if pawn, test if no pawn already there and if move is possible
+        else:#wall
+            #todo check is wall is valide
+            return True
+        return True
+    
     def playMove(self, move: Move):
+        if(not self.is_move_valid(move)):
+            self.invalid_move_has_been_played = True
+            return
         #todo better call is_move_valid before
         if move.is_pawn_move():
         
@@ -111,16 +154,11 @@ class QuoridorEnv():
             new_row = position_row + row_change
             new_col = position_col + col_change
            
-            
             #jump over player
             x,y = self.get_board_case_with_player_notation(new_col,new_row )
             if(self.board[x][y] == self.player_1_number or self.board[x][y] == self.player_2_number):
                 new_row = new_row + row_change
                 new_col = new_col + col_change
-            
-            if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
-                self.invalid_move_has_been_played = True
-                return
             
             self.set_board_case_with_player_notation(position_col, position_row, 0)
             self.set_board_case_with_player_notation(new_col, new_row, self.next_player_to_play)
