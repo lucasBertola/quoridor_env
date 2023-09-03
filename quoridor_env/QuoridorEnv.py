@@ -109,7 +109,27 @@ class QuoridorEnv():
             #jump over player
             old_x,old_y = self.get_board_case_with_player_notation(position_col,position_row )
             x,y = self.get_board_case_with_player_notation(new_col,new_row )
-             #todo  diagonal is allow 
+            
+            if(is_diagonal):
+                #check if there is a player to jump over
+                front_row_1 = position_row + row_change
+                front_col_1 = position_col
+                front_row_2 = position_row
+                front_col_2 = position_col + col_change
+
+                front_x1, front_y1 = self.get_board_case_with_player_notation(front_col_1, front_row_1)
+                front_x2, front_y2 = self.get_board_case_with_player_notation(front_col_2, front_row_2)
+                
+                if (self.board[front_x1][front_y1] != self.player_1_number 
+                    and self.board[front_x1][front_y1] != self.player_2_number
+                    and self.board[front_x2][front_y2] != self.player_1_number 
+                    and self.board[front_x2][front_y2] != self.player_2_number):
+                    return False
+                # todo Vérifiez s'il n'y a pas de mur derrière ce joueur
+
+
+                # todo Vérifiez s'il n'y a pas de mur entre le pion qu'au saute et la nouvelle position
+                
              
             if(not is_diagonal) :
                 #check if wall between 
@@ -128,7 +148,6 @@ class QuoridorEnv():
 
             #check if wall
             
-        #todo check if rang move if possible. if wall, test if no wall already there. if pawn, test if no pawn already there and if move is possible
         else:#wall
             #todo check is wall is valide
             return True
