@@ -148,8 +148,6 @@ class QuoridorEnv():
                  #check if wall between 
                 if(self.board[int((x+old_x)/2)][int((y+old_y)/2)] == self.wall_number):
                     return False
-                #todo check if wall between
-                #todo check si a pas de mur derriere
                 position_col = new_col
                 position_row = new_row
                 new_row = position_row + row_change
@@ -157,7 +155,7 @@ class QuoridorEnv():
                 old_x,old_y = self.get_board_case_with_player_notation(position_col,position_row )
                 x,y = self.get_board_case_with_player_notation(new_col,new_row )
                 
-                #check if it s not outside
+                # #check if it s not outside
                 if new_row <= 0 or new_row > self.size or new_col <= 0 or new_col > self.size:
                     return False  
                 
@@ -173,7 +171,10 @@ class QuoridorEnv():
                 
                 
         else:#wall
-            #todo check is wall is valide
+            wall_left = self.wall_left_player_1 if self.next_player_to_play == self.player_1_number else self.wall_left_player_2
+            if(wall_left <= 0):
+                return False
+            
             #todo verifier si il y a assez de mur
             #todo verifier si y a pas de mur a cet endroit qui bloque
             #todo verifier si ce mur n'empeche pas un joueur d'arriver a la ligne d'arrivée
@@ -240,7 +241,8 @@ class QuoridorEnv():
         return 
     
     def clone(self):
-        new_env = QuoridorEnv(opponent=self._opponent, render_mode=self.render_mode, first_player=self.first_player)
+        new_env = QuoridorEnv(self.player_1_name, self.player_2_name, self.size)
+        new_env.size = self.size
         new_env.next_player_to_play = self.next_player_to_play
         new_env.board = self.board.copy()
         new_env.last_move_row = self.last_move_row
@@ -258,7 +260,7 @@ class QuoridorEnv():
         
         new_env.player_1_name = self.player_1_name
         new_env.player_2_name = self.player_2_name
-        
+                
         return new_env
 
     def render(self):
