@@ -2,6 +2,9 @@ import numpy as np
 
 from .Move import MoveWall
 from .Move import PlayerMove
+from .BoardGraph import BoardGraph
+from .BoardGraph import Edge
+from .BoardGraph import Node
 
 class PlayerPosition():
     def __init__(self, col, row):
@@ -13,7 +16,6 @@ class PlayerPosition():
         
     def move(self, move:PlayerMove):
         return PlayerPosition(self.col+move.col_change, self.row+move.row_change)
-
 
 class WallPosition():
     def __init__(self, move:MoveWall):
@@ -40,6 +42,7 @@ class Board():
     def __init__(self, size=3):
         self.size = size
         self.board = np.zeros((self.maxBoardSize(),self.maxBoardSize()), dtype=np.int8)
+        self.boardGraph = BoardGraph(self.maxBoardSize())
 
     def maxBoardSize(self):
         return (self.size*2)-1
@@ -64,13 +67,40 @@ class Board():
             return self.board[col_board][row_board] != 0
         else:
             return False
-     
-    def set_wall_position(self, wall: WallPosition, value):
+
+    def set_wall_position(self, wall: WallPosition, value,player_1:PlayerPosition, player_2:PlayerPosition):
         position_wall = wall.boardPosition
         self.board[position_wall[0][0]][position_wall[0][1]] = value
         self.board[position_wall[1][0]][position_wall[1][1]] = value
         self.board[position_wall[2][0]][position_wall[2][1]] = value
-    
+        
+        wall_1 = (position_wall[0][0],position_wall[0][1])
+        wall_2 = (position_wall[2][0],position_wall[2][1])
+        
+        if(wall.move.move_type=='v'):
+            edge1 = Edge(Node(wall_1[0]-1,wall_1[1]),Node(wall_1[0]+1,wall_1[1]))
+            edge2 = Edge(Node(wall_2[0]-1,wall_2[1]),Node(wall_2[0]+1,wall_2[1]))
+        else:
+            edge1 = Edge(Node(wall_1[0],wall_1[1]-1),Node(wall_1[0],wall_1[1]+1))
+            edge2 = Edge(Node(wall_2[0],wall_2[1]-1),Node(wall_2[0],wall_2[1]+1))
+              
+        self.boardGraph.remove_edges(edge1,edge2,Node(player_1.board_col,player_1.board_row),Node(player_2.board_col,player_2.board_row))
+
+    def wall_is_blocking_player_to_reach_end(self, wall: WallPosition,player1:PlayerPosition,player2:PlayerPosition):
+        #todo doublon
+        position_wall = wall.boardPosition
+        wall_1 = (position_wall[0][0],position_wall[0][1])
+        wall_2 = (position_wall[2][0],position_wall[2][1])
+        
+        if(wall.move.move_type=='v'):
+            edge1 = Edge(Node(wall_1[0]-1,wall_1[1]),Node(wall_1[0]+1,wall_1[1]))
+            edge2 = Edge(Node(wall_2[0]-1,wall_2[1]),Node(wall_2[0]+1,wall_2[1]))
+        else:
+            edge1 = Edge(Node(wall_1[0],wall_1[1]-1),Node(wall_1[0],wall_1[1]+1))
+            edge2 = Edge(Node(wall_2[0],wall_2[1]-1),Node(wall_2[0],wall_2[1]+1))
+        
+        return not self.boardGraph.edges_can_be_removed(edge1,edge2,Node(player1.board_col,player1.board_row),Node(player2.board_col,player2.board_row))
+
     def getBoardInTwoDimention(self):
         return self.board
     
@@ -83,4 +113,5 @@ class Board():
     def clone(self):
         new_board = Board(self.size)
         new_board.board = np.copy(self.board)
+        new_board.boardGraph = self.boardGraph.clone()
         return new_board

@@ -117,9 +117,11 @@ class QuoridorEnv():
             #check if wall it not on something else
             if(self.board.wall_is_on_something(WallPosition(wall))):
                  return False
+             
+             #check if wall is not blocking a player to reach the end
+            if(self.board.wall_is_blocking_player_to_reach_end(WallPosition(wall),self.player_1_position,self.player_2_position)):
+                 return False
             
-            #todo verifier si ce mur n'empeche pas un joueur d'arriver a la ligne d'arrivée
-    
         return True
     
     def playMove(self, move: Move):
@@ -147,7 +149,7 @@ class QuoridorEnv():
                 self.player_2_position = newPlayerPosition
         else:  # Gérer le placement du mur
             move:MoveWall=move
-            self.board.set_wall_position(WallPosition(move),self.wall_number)
+            self.board.set_wall_position(WallPosition(move),self.wall_number,self.player_1_position,self.player_2_position)
             
             if self.next_player_to_play == self.player_1_number:
                 self.wall_left_player_1 -= 1
