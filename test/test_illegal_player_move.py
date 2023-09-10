@@ -410,7 +410,6 @@ def test_move_up_right_without_jump():
     boardSize = 3
     env = QuoridorEnv(size=boardSize)
     env.reset()
-    print(env.render())
     assert env.render() == \
 """Player 2 : 4 walls left
    +---+---+---+
@@ -443,7 +442,6 @@ def test_move_down_right_without_jump():
     boardSize = 3
     env = QuoridorEnv(size=boardSize)
     env.reset()
-    print(env.render())
     assert env.render() == \
 """Player 2 : 4 walls left
    +---+---+---+
@@ -505,7 +503,6 @@ def test_move_down_left_without_jump():
     boardSize = 3
     env = QuoridorEnv(size=boardSize)
     env.reset()
-    print(env.render())
     assert env.render() == \
 """Player 2 : 4 walls left
    +---+---+---+
