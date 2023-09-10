@@ -75,6 +75,7 @@ class QuoridorEnv():
         
     def insert_wall(self, wall: MoveWall):
         if(wall.move_type=='v'):
+            #todo refacto les positions
             x = (wall.col-1)*2 +1
             y = (wall.row-1)*2
             self.board[x][y] = self.wall_number
@@ -171,12 +172,34 @@ class QuoridorEnv():
                 
                 
         else:#wall
+            wall: MoveWall = move
             wall_left = self.wall_left_player_1 if self.next_player_to_play == self.player_1_number else self.wall_left_player_2
+            
+            # check if there is some wall left
             if(wall_left <= 0):
                 return False
             
-            #todo verifier si il y a assez de mur
-            #todo verifier si y a pas de mur a cet endroit qui bloque
+            #check if wall it not on something else
+            if(wall.move_type=='v'):
+                #todo refacto les positions
+                x = (wall.col-1)*2 +1
+                y = (wall.row-1)*2
+                
+                wall1 = self.board[x][y]
+                wall2 = self.board[x][y+1]
+                wall3 = self.board[x][y+2]
+            else: # wall.move_type=='h'
+                x = (wall.col-1)*2
+                y = (wall.row-1)*2 +1
+                
+                wall1 = self.board[x][y]
+                wall2 = self.board[x+1][y]
+                wall3 = self.board[x+2][y]
+             
+            if(wall1 != 0 or wall2 != 0 or wall3 != 0):
+                 return False
+            
+            
             #todo verifier si ce mur n'empeche pas un joueur d'arriver a la ligne d'arrivée
     
             return True

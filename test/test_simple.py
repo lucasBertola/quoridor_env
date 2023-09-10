@@ -1168,5 +1168,85 @@ Player 1 : 4 walls left"""
      1   2   3
 Player 1 : 4 walls left"""
 
+def test_put_wall_on_two_wall():
+    boardSize = 5
+    env = QuoridorEnv(size=boardSize)
+    env.reset()
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |                   |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |                   |
+   +   +   +   +   +   +
+ 1 |         1         |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 6 walls left"""
+
+    player_who_finish,isFinish  = env.play(MoveWall(1,1,'v',boardSize))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    
+    assert env.render() == \
+"""Player 2 : 6 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |                   |
+   +   +   +   +   +   +
+ 3 |                   |
+   +   +   +   +   +   +
+ 2 |   |               |
+   +   +   +   +   +   +
+ 1 |   |     1         |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 5 walls left"""
+
+    player_who_finish,isFinish  = env.play(MoveWall(1,3,'v',boardSize))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    
+    assert env.render() == \
+"""Player 2 : 5 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |   |               |
+   +   +   +   +   +   +
+ 3 |   |               |
+   +   +   +   +   +   +
+ 2 |   |               |
+   +   +   +   +   +   +
+ 1 |   |     1         |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 5 walls left"""
+
+    player_who_finish,isFinish  = env.play(MoveWall(1,2,'h',boardSize))
+    assert player_who_finish == 0, "game should not be finished"
+    assert isFinish == False, "game should not be finished"
+    
+    assert env.render() == \
+"""Player 2 : 5 walls left
+   +---+---+---+---+---+
+ 5 |         2         |
+   +   +   +   +   +   +
+ 4 |   |               |
+   +   +   +   +   +   +
+ 3 |   |               |
+   +---+---+   +   +   +
+ 2 |   |               |
+   +   +   +   +   +   +
+ 1 |   |     1         |
+   +---+---+---+---+---+
+     1   2   3   4   5
+Player 1 : 4 walls left"""
+
 if __name__ == "__main__":
     pytest.main()
