@@ -58,6 +58,8 @@ class PlayerMove(Move):
         elif direction == 'down_right':
             self.row_change = -1
             self.col_change = 1
+        
+        self._is_diagonal = self.row_change != 0 and self.col_change != 0
             
             
     def is_pawn_move(self):
@@ -65,3 +67,6 @@ class PlayerMove(Move):
 
     def is_wall_move(self):
         return False
+    
+    def is_diagonal(self):
+        return self._is_diagonal
