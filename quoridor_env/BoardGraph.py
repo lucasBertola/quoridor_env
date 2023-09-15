@@ -1,4 +1,3 @@
-import numpy as np
 import networkx as nx
 
 class Node():
@@ -46,29 +45,35 @@ class BoardGraph():
 
         return False
     
-    def remove_edges(self,edge1: Edge,edge2: Edge,player1:Node,player2:Node):
-        if(not self.graph.has_edge(*edge1.to_edge()) and not self.graph.has_edge(*edge2.to_edge())):
+    def remove_edges(self, edge1: Edge, edge2: Edge, player1: Node, player2: Node):
+        # Check if the edges exist before removing them
+        edge1_exists = self.graph.has_edge(*edge1.to_edge())
+        edge2_exists = self.graph.has_edge(*edge2.to_edge())
+
+        # If neither edge exists, return early
+        if not edge1_exists and not edge2_exists:
             return
-        
+
         lenComponents = len(list(nx.connected_components(self.graph)))
-        
-        self.graph.remove_edge(*edge1.to_edge())
-        self.graph.remove_edge(*edge2.to_edge())
-        
-        #todo, on pourrait utiliser le cache pour savoir si la suppression de cet edge rend le graph non connexe
+
+        # Remove the edges if they exist
+        if edge1_exists:
+            self.graph.remove_edge(*edge1.to_edge())
+        if edge2_exists:
+            self.graph.remove_edge(*edge2.to_edge())
 
         components = list(nx.connected_components(self.graph))
-        if(len(components) == lenComponents):
+        if len(components) == lenComponents:
             # The graph is still connected, we can stop here
             return
-        
+
         # Find which component contains (xPlayer1, yPlayer1) or (xPlayer2, yPlayer2)
         good_component = []
         for component in components:
             if player1.to_node() in component or player2.to_node() in component:
                 good_component.append(component)
                 break
-            
+
         # Remove all other components
         for component in components:
             if component not in good_component:
@@ -94,11 +99,29 @@ class BoardGraph():
 
         # Return True if both players can still reach their respective goals, else False
         return player1_can_reach and player2_can_reach
-                
+    
+    def get_illegal_edges(self, player1:Node, player2:Node):
+        bridges = list(nx.bridges(self.graph))#todo recuperer dans le cache les brudges tant qu'on n'a pas posé de nouveau mur
+        illegal_edges = []
+        
+        for bridge in bridges:
+            # Temporarily remove the bridge
+            self.graph.remove_edge(*bridge)
+            
+            # Check if a path exists for both players using DFS
+            player1_can_reach = self._dfs(player1.to_node(), self.size - 1, set())
+            player2_can_reach = self._dfs(player2.to_node(), 0, set())
+            
+            # If one of the players can't reach their goal, it's an illegal edge
+            if not (player1_can_reach and player2_can_reach):
+                illegal_edges.append(bridge)
+            
+            # Add the bridge back
+            self.graph.add_edge(*bridge)
+
+        return illegal_edges
+      
     def clone(self):
         new_board = BoardGraph(self.size)
         new_board.graph = self.graph.copy()
         return new_board
-    
-    def find_articulation_points(self):
-        return nx.articulation_points(self.graph)

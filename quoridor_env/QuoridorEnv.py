@@ -17,7 +17,6 @@ class QuoridorEnv():
         self.size = size
         self.player_1_name = player_1_name
         self.player_2_name = player_2_name
-        self.reset()
 
     def reset(self, seed=None):
         self.board = Board(self.size)

@@ -42,7 +42,7 @@ class Board():
     def __init__(self, size=3):
         self.size = size
         self.board = np.zeros((self.maxBoardSize(),self.maxBoardSize()), dtype=np.int8)
-        self.boardGraph = BoardGraph(self.maxBoardSize())
+        self.boardGraph = BoardGraph(self.maxBoardSize()) 
 
     def maxBoardSize(self):
         return (self.size*2)-1
@@ -111,7 +111,9 @@ class Board():
             or self.board[position_wall[2][0]][position_wall[2][1]] != 0
 
     def clone(self):
-        new_board = Board(self.size)
+        new_board = Board(self.size) 
+        #todo le probleme c'est que ut cree le board pour rien la
+        #todo le probleme c'est que ut cree le boardgraph pour rien la
         new_board.board = np.copy(self.board)
         new_board.boardGraph = self.boardGraph.clone()
         return new_board
