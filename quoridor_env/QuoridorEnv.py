@@ -1,5 +1,3 @@
-import numpy as np
-
 from .Move import MoveWall
 from .Move import Move
 from .Move import PlayerMove
@@ -19,7 +17,7 @@ class QuoridorEnv():
         self.player_2_name = player_2_name
 
     def reset(self, seed=None):
-        self.board = Board(self.size)
+        self.board = Board(self.size,self.wall_number)
         self.last_move_row = None
         self.last_move_col = None
         self.last_move_type = None
@@ -148,7 +146,7 @@ class QuoridorEnv():
                 self.player_2_position = newPlayerPosition
         else:  # Gérer le placement du mur
             move:MoveWall=move
-            self.board.set_wall_position(WallPosition(move),self.wall_number,self.player_1_position,self.player_2_position)
+            self.board.set_wall_position(WallPosition(move))
             
             if self.next_player_to_play == self.player_1_number:
                 self.wall_left_player_1 -= 1

@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 
-    
+
 class Move(ABC):
     @abstractmethod
     def is_pawn_move(self):
         pass
     def is_wall_move(self):
         pass
-    
+
 class MoveWall(Move):
     def __init__(self, col, row, move_type, board_size):
         assert move_type in ['v', 'h'], "move_type must be 'v' or 'h'"
