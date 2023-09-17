@@ -18,6 +18,7 @@ class QuoridorEnv():
 
     def reset(self, seed=None):
         self.board = Board(self.size,self.wall_number)
+        self.board.reset()
         self.last_move_row = None
         self.last_move_col = None
         self.last_move_type = None
@@ -162,10 +163,6 @@ class QuoridorEnv():
             self.next_player_to_play = self.player_2_number
         else:
             self.next_player_to_play = self.player_1_number
-    
-    def get_valid_actions(self):
-        #todo
-        return 
     
     def clone(self):
         new_env = QuoridorEnv(self.player_1_name, self.player_2_name, self.size)

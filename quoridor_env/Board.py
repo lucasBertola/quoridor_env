@@ -42,8 +42,10 @@ class Board():
         self.size = size
         self.wall_number = wall_number
         self.maxBoardSize = self._maxBoardSize()
+        
+    def reset(self):
         self.board = np.zeros((self.maxBoardSize,self.maxBoardSize), dtype=np.int8)
-
+        
     def _maxBoardSize(self):
         return (self.size*2)-1
         
@@ -205,6 +207,5 @@ class Board():
 
     def clone(self):
         new_board = Board(self.size,self.wall_number) 
-        #todo le probleme c'est que ut cree le board pour rien la dans le constructeur
         new_board.board = np.copy(self.board)
         return new_board
